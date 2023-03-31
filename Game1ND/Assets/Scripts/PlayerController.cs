@@ -17,12 +17,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+        ConstrainPlayerPosition();
+        MovePlayer();
+    }
 
-        playerRb.AddForce(Vector3.forward * speed * verticalInput);
-        playerRb.AddForce(Vector3.right * speed * horizontalInput);
-
+    void MovePlayer()
+    {
         if (transform.position.z > zBoundTop)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, zBoundTop);
@@ -32,5 +32,13 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, zBoundBot);
         }
+    }
+    void ConstrainPlayerPosition()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        playerRb.AddForce(Vector3.forward * speed * verticalInput);
+        playerRb.AddForce(Vector3.right * speed * horizontalInput);
     }
 }
