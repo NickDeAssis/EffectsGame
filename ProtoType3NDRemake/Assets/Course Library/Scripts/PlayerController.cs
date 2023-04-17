@@ -8,6 +8,10 @@ public class PlayerController : MonoBehaviour
     public bool isOnGround = true;
     public float jumpForce = 10.0f;
     public float gravityModifier;
+    private bool doubleJump = false;
+    public float doubleJumpForce;
+    public bool doubleSpeed = false;
+
     public ParticleSystem explostionParticle;
     public ParticleSystem dirtParticle;
     private Rigidbody playerRb;
@@ -35,13 +39,33 @@ public class PlayerController : MonoBehaviour
             playerAudioSource.PlayOneShot(jumpSound, 1.0f);
             isOnGround = false;
             playerAnim.SetTrigger("Jump_trig");
-            
+
+            doubleJump = false;
+        }else if(Input.GetKeyDown(KeyCode.Space) && !isOnGround  && !doubleJump)
+        {
+            playerRb.AddForce(Vector3.up * doubleJumpForce, ForceMode.Impulse);
+            playerAnim.SetTrigger("Jump_trig");
+            playerAudioSource.PlayOneShot(jumpSound, 1.0f);
+            doubleJump = true;
+            doubleJump = true;
+
         }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            doubleSpeed = true;
+            playerAnim.SetFloat("SpeedMultipier", 2.0f);
+        }else if (doubleSpeed)
+        {
+            doubleSpeed = false;
+            playerAnim.SetFloat("SpeedMultipier", 1.0f);
+        }
+
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") && !gameOver)
         {
             dirtParticle.Play();
             isOnGround = true;
